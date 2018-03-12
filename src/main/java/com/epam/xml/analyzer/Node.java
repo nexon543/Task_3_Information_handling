@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Node {
 
-	String type;
-	String content;
+	private String type;
+	private String content;
 	
 	public String getType() {
 		return type;
