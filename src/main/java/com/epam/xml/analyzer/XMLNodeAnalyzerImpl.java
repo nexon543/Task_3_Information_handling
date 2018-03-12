@@ -1,17 +1,27 @@
 package com.epam.xml.analyzer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
-public class XMLNodeAnalyzerImpl  {
+public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
 
-	public void f() {
-	try(BufferedReader reader=new BufferedReader(new FileReader("asdasd"))){
-		
-	}
-	catch (IOException ex) {}
-	}
-	
+    BufferedReader xmlFileReade;
+    String currentLine;
+    int lastElementIndex;
+
+    public XMLNodeAnalyzerImpl(String filePath) throws FileNotFoundException {
+        FileReader fileReader = new FileReader(new File(filePath));
+        BufferedReader xmlFileReade = new BufferedReader(fileReader);
+    }
+
+    @Override
+    public Node getNextNode() throws IOException {
+        Node node=new Node();
+        String line;
+
+    }
+
+    private int getStartElementIndex(){
+        int elementIndex=0;
+        return elementIndex;
+    }
 }
