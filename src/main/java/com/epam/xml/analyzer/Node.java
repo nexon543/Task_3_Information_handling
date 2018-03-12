@@ -4,15 +4,18 @@ import java.util.Objects;
 
 public class Node {
 
-	private String type;
+	private NodeType type;
 	private String content;
-	
-	public String getType() {
+
+
+	public NodeType getType() {
 		return type;
 	}
-	public void setType(String type) {
+
+	public void setType(NodeType type) {
 		this.type = type;
 	}
+
 	public String getContent() {
 		return content;
 	}
