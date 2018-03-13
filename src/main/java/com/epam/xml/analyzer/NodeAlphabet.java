@@ -31,8 +31,9 @@ public class NodeAlphabet {
         openSymbolNodeTypeMap.put(Constants.LEFT_BREKET_OPEN_TAG_OR_SINGLE_TAG, EnumSet.of(NodeType.OPEN_TAG, NodeType.SINGLE_TAG));
         openSymbolNodeTypeMap.put(Constants.LEFT_XML_DECLARATION, EnumSet.of(NodeType.XML_DECLARATION));
         openSymbolNodeTypeMap.put(Constants.CONTENT_KEY, EnumSet.of(NodeType.CONTENT));
+        openSymbolNodeTypeMap.put(Constants.LEFT_BREKET_CLOSE_TAG, EnumSet.of(NodeType.CLOSE_TAG));
         closeSymbolNodeTypeMap = new HashMap<>();
-        closeSymbolNodeTypeMap.put(Constants.RIGHT_BRAKET_OPEN_TAG, EnumSet.of(NodeType.OPEN_TAG));
+        closeSymbolNodeTypeMap.put(Constants.RIGHT_BRAKET_OPEN_TAG, EnumSet.of(NodeType.OPEN_TAG, NodeType.CLOSE_TAG));
         closeSymbolNodeTypeMap.put(Constants.RIGHT_XML_DECLARATION, EnumSet.of(NodeType.XML_DECLARATION));
         closeSymbolNodeTypeMap.put(Constants.RIGHT_BRAKET_SINGLE_TAG, EnumSet.of(NodeType.SINGLE_TAG));
         closeSymbolNodeTypeMap.put(Constants.CONTENT_KEY, EnumSet.of(NodeType.CONTENT));
@@ -68,11 +69,12 @@ public class NodeAlphabet {
     }
 
     public Set<NodeType> getNodeTypesForCloseSymbol(String closeSymbol){
-        return closeSymbolNodeTypeMap.get(closeSymbol);
+        return EnumSet.copyOf(closeSymbolNodeTypeMap.get(closeSymbol));
     }
     public Set<NodeType> getNodeTypesForOpenSymbol(String openSymbol){
-        return openSymbolNodeTypeMap.get(openSymbol);
+        return EnumSet.copyOf(openSymbolNodeTypeMap.get(openSymbol));
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +22,10 @@ public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
     private String getOpenSymbol() {
         String result = Constants.CONTENT_KEY;
         for (String openSymbol : nodeAplphabet.getOpenSymbols()) {
-            if ((currentLine.indexOf(openSymbol) != -1) && result.length() < openSymbol.length()) {
+            int openSymbolIndex=currentLine.indexOf(openSymbol);
+            int openSymbolLength=openSymbol.length();
+            if ( (openSymbolIndex == 0)
+                    && (result.length() < openSymbolLength)) {
                 result = openSymbol;
             }
         }
@@ -54,7 +58,11 @@ public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
         Set<NodeType> openSymbolPossibleTypes = nodeAplphabet.getNodeTypesForOpenSymbol(currentOpenSymbol);
         Set<NodeType> closeSymbolPossibleTypes = nodeAplphabet.getNodeTypesForCloseSymbol(currentCloseSymbol);
         openSymbolPossibleTypes.retainAll(closeSymbolPossibleTypes);
-        return openSymbolPossibleTypes.iterator().next();
+        NodeType nodeType=null;
+        Iterator iterator=openSymbolPossibleTypes.iterator();
+        if(iterator.hasNext())
+            nodeType=(NodeType)iterator.next();
+        return nodeType;
     }
 
     public XMLNodeAnalyzerImpl(String filePath) throws IOException {
@@ -79,7 +87,7 @@ public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
             nodeEndIndex = getIndexOfClosestString(possibleCloseSymbols);
         }
         if (currentOpenSymbol.equals(Constants.CONTENT_KEY)) {
-            nodeEndIndex--;
+            currentCloseSymbol=Constants.CONTENT_KEY;
         }
         currentNodeContent.append(currentLine.substring(0, nodeEndIndex));
         currentLine.delete(0, nodeEndIndex + currentCloseSymbol.length());
