@@ -5,5 +5,4 @@ import java.io.IOException;
 public interface XMLNodeAnalyzer {
 
 	Node getNextNode() throws IOException;
-	boolean hasNext() throws IOException;
 }

@@ -23,6 +23,7 @@ public class NodeAlphabet {
         closeSymbols = new ArrayList<>();
         openSymbols.add(Constants.LEFT_BREKET_OPEN_TAG_OR_SINGLE_TAG);
         openSymbols.add(Constants.LEFT_XML_DECLARATION);
+        openSymbols.add(Constants.LEFT_BREKET_CLOSE_TAG);
         closeSymbols.add(Constants.RIGHT_BRAKET_OPEN_TAG);
         closeSymbols.add(Constants.RIGHT_BRAKET_SINGLE_TAG);
         closeSymbols.add(Constants.RIGHT_XML_DECLARATION);

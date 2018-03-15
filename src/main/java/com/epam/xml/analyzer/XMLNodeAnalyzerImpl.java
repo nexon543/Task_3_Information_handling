@@ -11,64 +11,20 @@ import java.util.Set;
 public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
 
     private BufferedReader xmlFileReader;
+
     private StringBuilder currentLine;
     private StringBuilder currentNodeContent;
-    private String currentOpenSymbol;
-    private String currentCloseSymbol;
-
+    private String currentNodeOpenSymbol;
+    private String currentNodeCloseSymbol;
+    private List<String> possibleCloseSymbols;
+    private int currentNodeEndIndex;
 
     private NodeAlphabet nodeAplphabet;
-
-    private String getOpenSymbol() {
-        String result = Constants.CONTENT_KEY;
-        for (String openSymbol : nodeAplphabet.getOpenSymbols()) {
-            int openSymbolIndex=currentLine.indexOf(openSymbol);
-            int openSymbolLength=openSymbol.length();
-            if ( (openSymbolIndex == 0)
-                    && (result.length() < openSymbolLength)) {
-                result = openSymbol;
-            }
-        }
-        return result;
-    }
-
-    private int getIndexOfClosestString(List<String> possibleCloseBrackets) throws IOException {
-        int index = -1;
-
-        for (String closeSymbol : possibleCloseBrackets) {
-            int currentSymbolIndex = currentLine.indexOf(closeSymbol);
-            if (currentSymbolIndex != -1 && currentSymbolIndex < index) {
-                index = currentSymbolIndex;
-                currentCloseSymbol = closeSymbol;
-            }
-            if (index == -1 && currentSymbolIndex != -1) {
-                index = currentSymbolIndex;
-                currentCloseSymbol = closeSymbol;
-            }
-        }
-        if (index == -1) {
-            currentNodeContent.append(currentLine);
-            readNextLine();
-            index=getIndexOfClosestString(possibleCloseBrackets);
-        }
-        return index;
-    }
-
-    private NodeType determineNodeType() {
-        Set<NodeType> openSymbolPossibleTypes = nodeAplphabet.getNodeTypesForOpenSymbol(currentOpenSymbol);
-        Set<NodeType> closeSymbolPossibleTypes = nodeAplphabet.getNodeTypesForCloseSymbol(currentCloseSymbol);
-        openSymbolPossibleTypes.retainAll(closeSymbolPossibleTypes);
-        NodeType nodeType=null;
-        Iterator iterator=openSymbolPossibleTypes.iterator();
-        if(iterator.hasNext())
-            nodeType=(NodeType)iterator.next();
-        return nodeType;
-    }
 
     public XMLNodeAnalyzerImpl(String filePath) throws IOException {
         FileReader fileReader = new FileReader(new File(filePath));
         xmlFileReader = new BufferedReader(fileReader);
-        currentLine = new StringBuilder(xmlFileReader.readLine());
+        currentLine = new StringBuilder();
         nodeAplphabet = new NodeAlphabet();
         currentNodeContent = new StringBuilder();
 
@@ -76,45 +32,86 @@ public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
 
     public Node getNextNode() throws IOException {
         Node node = new Node();
-        currentNodeContent=new StringBuilder();
-        currentOpenSymbol = getOpenSymbol();
-        List<String> possibleCloseSymbols = nodeAplphabet.getPossibleCloseSymbol(currentOpenSymbol);
-        currentLine.delete(0, currentOpenSymbol.length());
-        int nodeEndIndex = getIndexOfClosestString(possibleCloseSymbols);
-        while (nodeEndIndex == -1) {
-            currentNodeContent.append(currentLine);
-            readNextLine();
-            nodeEndIndex = getIndexOfClosestString(possibleCloseSymbols);
-        }
-        if (currentOpenSymbol.equals(Constants.CONTENT_KEY)) {
-            currentCloseSymbol=Constants.CONTENT_KEY;
-        }
-        currentNodeContent.append(currentLine.substring(0, nodeEndIndex));
-        currentLine.delete(0, nodeEndIndex + currentCloseSymbol.length());
+        readNextLine();
+        getOpenSymbol();
+        cutCurrentLineFromTheBeginning(currentNodeOpenSymbol.length());
+        getContentAndSetCloseSymbol();
+        cutCurrentLineFromTheBeginning(currentNodeEndIndex + currentNodeCloseSymbol.length());
         node.setContent(currentNodeContent.toString());
         node.setType(determineNodeType());
         return node;
     }
 
-    public static void main(String[] args) throws IOException {
-        XMLNodeAnalyzer a = new XMLNodeAnalyzerImpl("web.xml");
-        while (a.hasNext()) {
-            Node node = a.getNextNode();
-            System.out.println(node.getType() + ":" + node.getContent());
+    private void getContentAndSetCloseSymbol() throws IOException {
+        currentNodeContent.setLength(0);
+        if (currentNodeOpenSymbol.equals(Constants.CONTENT_KEY)) {
+            currentNodeCloseSymbol = Constants.CONTENT_KEY;
         }
-    }
-
-
-    public boolean hasNext() throws IOException {
-        while (currentLine.length() == 0) {
+        else {
+            possibleCloseSymbols = nodeAplphabet.getPossibleCloseSymbol(currentNodeOpenSymbol);
+        }
+        currentNodeEndIndex= getCurrentNodeCloseSymbol(possibleCloseSymbols);
+        while (currentNodeEndIndex == -1) {
+            currentNodeContent.append(currentLine);
             readNextLine();
+            currentNodeEndIndex = getCurrentNodeCloseSymbol(possibleCloseSymbols);
         }
-        return !(currentLine.length() == 0);
+        currentNodeContent.append(currentLine.substring(0, currentNodeEndIndex));
+    }
+    private void cutCurrentLineFromTheBeginning(int length){
+        currentLine.delete(0, length);
+    }
+    private void readNextLine() throws IOException {
+        String newLine="";
+        while (newLine.length() == 0) {
+            newLine = xmlFileReader.readLine().trim();
+        }
+        currentLine.setLength(0);
+        currentLine.append(newLine);
     }
 
-    private void readNextLine() throws IOException {
-        String nextString = xmlFileReader.readLine().trim();
-        currentLine.delete(0,currentLine.length());
-        currentLine.append(nextString);
+    private void getOpenSymbol() {
+        currentNodeOpenSymbol = Constants.CONTENT_KEY;
+        for (String openSymbol : nodeAplphabet.getOpenSymbols()) {
+            int openSymbolIndex = currentLine.indexOf(openSymbol);
+            int openSymbolLength = openSymbol.length();
+            if ((openSymbolIndex == 0)
+                    && (currentNodeOpenSymbol.length() < openSymbolLength)) {
+                currentNodeOpenSymbol = openSymbol;
+            }
+        }
+    }
+
+    private int getCurrentNodeCloseSymbol(List<String> possibleCloseBrackets) throws IOException {
+        int index = -1;
+
+        for (String closeSymbol : possibleCloseBrackets) {
+            int currentSymbolIndex = currentLine.indexOf(closeSymbol);
+            if (currentSymbolIndex != -1 && currentSymbolIndex < index) {
+                index = currentSymbolIndex;
+                currentNodeCloseSymbol = closeSymbol;
+            }
+            if (index == -1 && currentSymbolIndex != -1) {
+                index = currentSymbolIndex;
+                currentNodeCloseSymbol = closeSymbol;
+            }
+        }
+        if (index == -1) {
+            currentNodeContent.append(currentLine);
+            readNextLine();
+            index = getCurrentNodeCloseSymbol(possibleCloseBrackets);
+        }
+        return index;
+    }
+
+    private NodeType determineNodeType() {
+        Set<NodeType> openSymbolPossibleTypes = nodeAplphabet.getNodeTypesForOpenSymbol(currentNodeOpenSymbol);
+        Set<NodeType> closeSymbolPossibleTypes = nodeAplphabet.getNodeTypesForCloseSymbol(currentNodeCloseSymbol);
+        openSymbolPossibleTypes.retainAll(closeSymbolPossibleTypes);
+        NodeType nodeType = null;
+        Iterator iterator = openSymbolPossibleTypes.iterator();
+        if (iterator.hasNext())
+            nodeType = (NodeType) iterator.next();
+        return nodeType;
     }
 }
