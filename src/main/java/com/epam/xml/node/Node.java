@@ -1,4 +1,4 @@
-package com.epam.xml.analyzer;
+package com.epam.xml.node;
 
 import java.util.Objects;
 

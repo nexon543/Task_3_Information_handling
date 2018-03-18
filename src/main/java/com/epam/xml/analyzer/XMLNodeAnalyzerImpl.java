@@ -1,5 +1,10 @@
 package com.epam.xml.analyzer;
 
+import com.epam.xml.node.Constants;
+import com.epam.xml.node.Node;
+import com.epam.xml.node.NodeAlphabet;
+import com.epam.xml.node.NodeType;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

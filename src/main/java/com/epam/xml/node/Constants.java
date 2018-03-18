@@ -1,4 +1,4 @@
-package com.epam.xml.analyzer;
+package com.epam.xml.node;
 
 public class Constants {
     public static final String LEFT_XML_DECLARATION="<?";
