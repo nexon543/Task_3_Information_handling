@@ -11,14 +11,6 @@ public class NodeAlphabet {
     private Map<String, List<String>> openSymbolPossibleCloseSymbolsMap;
 
 
-    public Map<String, List<String>> getOpenSymbolPossibleCloseSymbolsMap() {
-        return openSymbolPossibleCloseSymbolsMap;
-    }
-
-    public void setOpenSymbolPossibleCloseSymbolsMap(Map<String, List<String>> openSymbolPossibleCloseSymbolsMap) {
-        this.openSymbolPossibleCloseSymbolsMap = openSymbolPossibleCloseSymbolsMap;
-    }
-
     public NodeAlphabet() {
         openSymbols = new ArrayList<>();
         closeSymbols = new ArrayList<>();
@@ -77,21 +69,12 @@ public class NodeAlphabet {
         return EnumSet.copyOf(openSymbolNodeTypeMap.get(openSymbol));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NodeAlphabet that = (NodeAlphabet) o;
-        return Objects.equals(openSymbols, that.openSymbols) &&
-                Objects.equals(closeSymbols, that.closeSymbols) &&
-                Objects.equals(openSymbolNodeTypeMap, that.openSymbolNodeTypeMap) &&
-                Objects.equals(closeSymbolNodeTypeMap, that.closeSymbolNodeTypeMap);
+    public Map<String, List<String>> getOpenSymbolPossibleCloseSymbolsMap() {
+        return Collections.unmodifiableMap(openSymbolPossibleCloseSymbolsMap);
     }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(openSymbols, closeSymbols, openSymbolNodeTypeMap, closeSymbolNodeTypeMap);
+    public void setOpenSymbolPossibleCloseSymbolsMap(Map<String, List<String>> openSymbolPossibleCloseSymbolsMap) {
+        this.openSymbolPossibleCloseSymbolsMap = openSymbolPossibleCloseSymbolsMap;
     }
 
     public List<String> getOpenSymbols() {
@@ -111,7 +94,7 @@ public class NodeAlphabet {
     }
 
     public Map<String, Set<NodeType>> getOpenSymbolNodeTypeMap() {
-        return openSymbolNodeTypeMap;
+        return Collections.unmodifiableMap(openSymbolNodeTypeMap);
     }
 
     public void setOpenSymbolNodeTypeMap(Map<String, Set<NodeType>> openSymbolNodeTypeMap) {
@@ -119,10 +102,27 @@ public class NodeAlphabet {
     }
 
     public Map<String, Set<NodeType>> getCloseSymbolNodeTypeMap() {
-        return closeSymbolNodeTypeMap;
+        return Collections.unmodifiableMap(closeSymbolNodeTypeMap);
     }
 
     public void setCloseSymbolNodeTypeMap(Map<String, Set<NodeType>> closeSymbolNodeTypeMap) {
         this.closeSymbolNodeTypeMap = closeSymbolNodeTypeMap;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NodeAlphabet that = (NodeAlphabet) o;
+        return Objects.equals(openSymbols, that.openSymbols) &&
+                Objects.equals(closeSymbols, that.closeSymbols) &&
+                Objects.equals(openSymbolNodeTypeMap, that.openSymbolNodeTypeMap) &&
+                Objects.equals(closeSymbolNodeTypeMap, that.closeSymbolNodeTypeMap);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(openSymbols, closeSymbols, openSymbolNodeTypeMap, closeSymbolNodeTypeMap);
     }
 }

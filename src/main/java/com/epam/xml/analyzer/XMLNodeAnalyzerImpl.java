@@ -26,6 +26,7 @@ public class XMLNodeAnalyzerImpl implements XMLNodeAnalyzer {
 
     private NodeAlphabet nodeAplphabet;
 
+
     public XMLNodeAnalyzerImpl(String filePath) throws IOException {
         FileReader fileReader = new FileReader(new File(filePath));
         xmlFileReader = new BufferedReader(fileReader);
