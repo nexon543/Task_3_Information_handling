@@ -69,60 +69,7 @@ public class NodeAlphabet {
         return EnumSet.copyOf(openSymbolNodeTypeMap.get(openSymbol));
     }
 
-    public Map<String, List<String>> getOpenSymbolPossibleCloseSymbolsMap() {
-        return Collections.unmodifiableMap(openSymbolPossibleCloseSymbolsMap);
-    }
-
-    public void setOpenSymbolPossibleCloseSymbolsMap(Map<String, List<String>> openSymbolPossibleCloseSymbolsMap) {
-        this.openSymbolPossibleCloseSymbolsMap = openSymbolPossibleCloseSymbolsMap;
-    }
-
     public List<String> getOpenSymbols() {
         return openSymbols;
-    }
-
-    public void setOpenSymbols(List<String> openSymbols) {
-        this.openSymbols = openSymbols;
-    }
-
-    public List<String> getCloseSymbols() {
-        return closeSymbols;
-    }
-
-    public void setCloseSymbols(List<String> closeSymbols) {
-        this.closeSymbols = closeSymbols;
-    }
-
-    public Map<String, Set<NodeType>> getOpenSymbolNodeTypeMap() {
-        return Collections.unmodifiableMap(openSymbolNodeTypeMap);
-    }
-
-    public void setOpenSymbolNodeTypeMap(Map<String, Set<NodeType>> openSymbolNodeTypeMap) {
-        this.openSymbolNodeTypeMap = openSymbolNodeTypeMap;
-    }
-
-    public Map<String, Set<NodeType>> getCloseSymbolNodeTypeMap() {
-        return Collections.unmodifiableMap(closeSymbolNodeTypeMap);
-    }
-
-    public void setCloseSymbolNodeTypeMap(Map<String, Set<NodeType>> closeSymbolNodeTypeMap) {
-        this.closeSymbolNodeTypeMap = closeSymbolNodeTypeMap;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NodeAlphabet that = (NodeAlphabet) o;
-        return Objects.equals(openSymbols, that.openSymbols) &&
-                Objects.equals(closeSymbols, that.closeSymbols) &&
-                Objects.equals(openSymbolNodeTypeMap, that.openSymbolNodeTypeMap) &&
-                Objects.equals(closeSymbolNodeTypeMap, that.closeSymbolNodeTypeMap);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(openSymbols, closeSymbols, openSymbolNodeTypeMap, closeSymbolNodeTypeMap);
     }
 }
